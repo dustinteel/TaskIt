@@ -22,7 +22,7 @@ while done == False:
     screen.fill((255, 255, 255)) 
     # write draw code here
  
-    # display what’s drawn. this might change.
+    # display what is drawn here
     pygame.display.update()
     # run at 20 fps
     clock.tick(20)
