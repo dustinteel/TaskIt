@@ -1,11 +1,16 @@
 import pygame
- 
+import os
+#setup folders
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder, 'img')
 # initialize game engine
 pygame.init()
 # set screen width/height and caption
-size = [640, 480]
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('My Game')
+screen = pygame.display.set_mode((640, 545))
+# Load the background image
+background = pygame.image.load(os.path.join(img_folder, "TaskItBoard.jpg")).convert()
+backgroundRect = background.get_rect()
+pygame.display.set_caption("Task It")
 # initialize clock. used later in the loop.
 clock = pygame.time.Clock()
  
@@ -18,8 +23,8 @@ while done == False:
             done = True
     # write game logic here
  
-    # clear the screen before drawing
-    screen.fill((255, 255, 255)) 
+    # clear the screen by blitting the background
+    screen.blit(background, backgroundRect)
     # write draw code here
  
     # display what is drawn here
