@@ -37,7 +37,7 @@ img_folder = os.path.join(game_folder, 'img')
 pygame.init()
 # set screen width/height and caption
 screen = DropDisplay((1276, 800))
-screen.grab = True
+screen.grab = False
 # Load the background image
 background = pygame.image.load(os.path.join(img_folder, "TaskItBoard.jpg")).convert()
 screen.image = background
