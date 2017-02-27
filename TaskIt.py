@@ -6,7 +6,7 @@ from collections import deque
 # Define drag and drop task images
 class Task(planes.Plane):
 
-    def __init__(self, name, rect, image, draggable = False, grab = False):
+    def __init__(self, name, rect, image, highlight = True, draggable = False, grab = False):
         planes.Plane.__init__(self, name, rect, draggable, grab)
 
         self.moving = False
@@ -14,11 +14,23 @@ class Task(planes.Plane):
 
 class Day(planes.Plane):
 
+        def __init__(self, name, rect, draggable = False, grab = False):
+            planes.Plane.__init__(self, name, rect, draggable, grab)
+            self.count = len(self.subplanes)
+
 	def dropped_upon(self, plane, coordinates):
+                self.count = len(self.subplanes)
+                print coordinates[0]
+                print self.rect.x
+                newX = 110
+                newY = self.count * 112 + 55
+                coordinates = ((newX, newY))
+                
 
 		planes.Plane.dropped_upon(self, plane, coordinates)
 
 		plane.moving = False
+		self.count = len(self.subplanes)
 
 class DropDisplay(planes.Display):
 
@@ -29,6 +41,7 @@ class DropDisplay(planes.Display):
 			planes.Display.dropped_upon(self, plane, coordinates)
 
 			plane.moving = False
+
     
 #setup folders
 game_folder = os.path.dirname(__file__)
@@ -81,7 +94,6 @@ screen.TaskList.sub(Task("Task1", task1.get_rect(), task1, draggable = True))
 
 task2 = pygame.image.load(os.path.join(img_folder, "Task1.png")).convert()
 screen.TaskList.sub(Task("Task2", pygame.Rect((0, task2.get_height()),(task2.get_width(), task2.get_height())), task2, draggable = True))
-
 task3 = pygame.image.load(os.path.join(img_folder, "Task1.png")).convert()
 screen.TaskList.sub(Task("Task3", pygame.Rect((0, task3.get_height() * 2), (task3.get_width(), task3.get_height())), task3, draggable = True))
 
