@@ -22,8 +22,8 @@ class Day(planes.Plane):
                 self.count = len(self.subplanes)
                 print coordinates[0]
                 print self.rect.x
-                newX = 110
-                newY = self.count * 112 + 55
+                newX = 65
+                newY = self.count * 70 + 35
                 coordinates = ((newX, newY))
                 
 
@@ -49,10 +49,10 @@ img_folder = os.path.join(game_folder, 'img')
 # initialize game engine
 pygame.init()
 # set screen width/height and caption
-screen = DropDisplay((1276, 800))
+screen = DropDisplay((800, 480))
 screen.grab = False
 # Load the background image
-background = pygame.image.load(os.path.join(img_folder, "TaskItBoard.jpg")).convert()
+background = pygame.image.load(os.path.join(img_folder, "Taskitboard.jpg")).convert()
 screen.image = background
 backgroundRect = background.get_rect()
 pygame.display.set_caption("Task It")
@@ -60,32 +60,31 @@ pygame.display.set_caption("Task It")
 clock = pygame.time.Clock()
 
 # Create Task List
-screen.sub(Day("TaskList", pygame.Rect((28, 331),(219, 436)), draggable = False, grab = True))
-screen.TaskList.image.fill((229, 254, 248))
+screen.sub(Day("TaskList", pygame.Rect((15, 200), (135, 215)), draggable = False, grab = True))
+screen.TaskList.image.fill((228, 255, 250))
 
 # Create Days
 # Sunday
-screen.sub(Day("Sunday", pygame.Rect((292, 96), (219, 303)), draggable = False, grab = True))
-screen.Sunday.image.fill((229, 254, 248))
+screen.sub(Day("Sunday", pygame.Rect((185, 50), (130, 185)), draggable = False, grab = True))
+screen.Sunday.image.fill((228, 255, 250))
 # Monday
-screen.sub(Day("Monday", pygame.Rect((537, 96),(219, 303)), draggable = False, grab = True))
-screen.Monday.image.fill((229, 254, 248))
+screen.sub(Day("Monday", pygame.Rect((340, 50), (130, 185)), draggable = False, grab = True))
+screen.Monday.image.fill((228, 255, 250))
 # Tuesday
-screen.sub(Day("Tuesday", pygame.Rect((782, 96),(219, 303)), draggable = False, grab = True))
-screen.Tuesday.image.fill((229, 254, 248))
+screen.sub(Day("Tuesday", pygame.Rect((495, 50), (130, 185)), draggable = False, grab = True))
+screen.Tuesday.image.fill((228, 255, 250))
 # Wednesday
-screen.sub(Day("Wednesday", pygame.Rect((1027, 96),(219, 303)), draggable = False, grab = True))
-screen.Wednesday.image.fill((229, 254, 248))
-
+screen.sub(Day("Wednesday", pygame.Rect((650, 50), (130, 185)), draggable = False, grab = True))
+screen.Wednesday.image.fill((228, 255, 250))
 # Thursday
-screen.sub(Day("Thursday", pygame.Rect((292 ,475), (219, 303)), draggable = False, grab = True))
-screen.Thursday.image.fill((229, 254, 248))
+screen.sub(Day("Thursday", pygame.Rect((185, 290), (130, 180)), draggable = False, grab = True))
+screen.Thursday.image.fill((228, 255, 250))
 # Friday
-screen.sub(Day("Friday", pygame.Rect((537, 475), (219, 303)), draggable = False, grab = True))
-screen.Friday.image.fill((229, 254, 248))
+screen.sub(Day("Friday", pygame.Rect((340, 290), (130, 180)), draggable = False, grab = True))
+screen.Friday.image.fill((228, 255, 250))
 # Saturday
-screen.sub(Day("Saturday", pygame.Rect((782, 475), (219, 303)), draggable = False, grab = True))
-screen.Saturday.image.fill((229, 254, 248))
+screen.sub(Day("Saturday", pygame.Rect((495, 290), (130, 180)), draggable = False, grab = True))
+screen.Saturday.image.fill((228, 255, 250))
 
 
 # Create tasks
@@ -96,9 +95,6 @@ task2 = pygame.image.load(os.path.join(img_folder, "Task1.png")).convert()
 screen.TaskList.sub(Task("Task2", pygame.Rect((0, task2.get_height()),(task2.get_width(), task2.get_height())), task2, draggable = True))
 task3 = pygame.image.load(os.path.join(img_folder, "Task1.png")).convert()
 screen.TaskList.sub(Task("Task3", pygame.Rect((0, task3.get_height() * 2), (task3.get_width(), task3.get_height())), task3, draggable = True))
-
-task4 = pygame.image.load(os.path.join(img_folder, "Task1.png")).convert()
-screen.TaskList.sub(Task("Task4", pygame.Rect((0, task4.get_height() * 3), (task4.get_width(), task4.get_height())), task4, draggable = True))
  
 # Loop until the user clicks close button
 done = False
