@@ -4,7 +4,6 @@ import sys
 import planes
 from collections import deque
 # Define drag and drop task images
-
 def move_up_tasks(self, plane, coordinates):
     # When a task is taken out of the task list, we need to move the remaining tasks up an insert another task
     x = 0
@@ -66,7 +65,6 @@ class TaskList(planes.Plane):
                 print self.name
 
 class Day(planes.Plane):
-
         def __init__(self, name, rect, draggable = False, grab = False):
             planes.Plane.__init__(self, name, rect, draggable, grab)
             self.count = len(self.subplanes)
@@ -91,10 +89,14 @@ class Day(planes.Plane):
 
                     plane.moving = False
                     self.count = len(self.subplanes)
-
+                    #drop_sound.play()
                     print self.name
 
 class DropDisplay(planes.Display):
+    def dropped_upon(self, plane, coordinates):
+        if isinstance(plane, Task):
+            planes.Display.dropped_upon(self, plane, coordinates)
+            plane.moving = False
 
 	def dropped_upon(self, plane, coordinates):
 
@@ -109,12 +111,24 @@ class StatusBar(planes.Plane):
         planes.Plane.__init__(self, name, rect, draggable, grab)
         self.image = image
 
-    
+
 #setup folders
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'img')
+audio_folder = os.path.join(game_folder, 'audio')
+
+#Preinitialize audio mixer
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 # initialize game engine
 pygame.init()
+
+# I HAVE COMMENTED OUT ALL AUDIO LINES BECAUSE THE AUDIO FILES WERE NOT PUSHED
+#Set up game audio
+#pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.mp3"))
+
+#pygame.mixer.music.play(-1)
+#drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
+
 # set screen width/height and caption
 screen = DropDisplay((800, 480))
 screen.grab = False
@@ -303,6 +317,7 @@ while done == False:
         screen.grades.image = grade75
     else:
         screen.grades.image = grade100
+
     # display what is drawn here
     screen.update()
     screen.render()
