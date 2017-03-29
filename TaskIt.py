@@ -123,12 +123,13 @@ pygame.mixer.pre_init(44100, -16, 2, 2048)
 # initialize game engine
 pygame.init()
 
-# I HAVE COMMENTED OUT ALL AUDIO LINES BECAUSE THE AUDIO FILES WERE NOT PUSHED
 #Set up game audio
-#pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.mp3"))
+pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.mp3"))
+pygame.mixer.music.play(-1)
+drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
+time_expiring_sound = pygame.mixer.Sound(os.path.join(audio_folder, "time_expiring.wav"))
+time_up_sound = pygame.mixer.Sound(os.path.join(audio_folder, "times_up.wav"))
 
-#pygame.mixer.music.play(-1)
-#drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
 
 # set screen width/height and caption
 screen = DropDisplay((800, 480))
