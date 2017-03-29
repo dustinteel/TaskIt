@@ -5,49 +5,50 @@ import planes
 from collections import deque
 # Define drag and drop task images
 class Task(planes.Plane):
-
     def __init__(self, name, rect, image, highlight = True, draggable = False, grab = False):
         planes.Plane.__init__(self, name, rect, draggable, grab)
-
         self.moving = False
         self.image = image
 
 class Day(planes.Plane):
+    def __init__(self, name, rect, draggable = False, grab = False):
+        planes.Plane.__init__(self, name, rect, draggable, grab)
+        self.count = len(self.subplanes)
 
-        def __init__(self, name, rect, draggable = False, grab = False):
-            planes.Plane.__init__(self, name, rect, draggable, grab)
-            self.count = len(self.subplanes)
-
-	def dropped_upon(self, plane, coordinates):
-                self.count = len(self.subplanes)
-                print coordinates[0]
-                print self.rect.x
-                newX = 65
-                newY = self.count * 70 + 35
-                coordinates = ((newX, newY))
-                
-
-		planes.Plane.dropped_upon(self, plane, coordinates)
-
-		plane.moving = False
-		self.count = len(self.subplanes)
+    def dropped_upon(self, plane, coordinates):
+        self.count = len(self.subplanes)
+        print(coordinates[0])
+        print(self.rect.x)
+        newX = 65
+        newY = self.count * 70 + 35
+        coordinates = ((newX, newY))          
+        planes.Plane.dropped_upon(self, plane, coordinates)
+        plane.moving = False
+        self.count = len(self.subplanes)
+        drop_sound.play()
 
 class DropDisplay(planes.Display):
+    def dropped_upon(self, plane, coordinates):
+        if isinstance(plane, Task):
+            planes.Display.dropped_upon(self, plane, coordinates)
+            plane.moving = False
 
-	def dropped_upon(self, plane, coordinates):
-
-		if isinstance(plane, Task):
-
-			planes.Display.dropped_upon(self, plane, coordinates)
-
-			plane.moving = False
-
-    
 #setup folders
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'img')
+audio_folder = os.path.join(game_folder, 'audio')
+
+#Preinitialize audio mixer
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 # initialize game engine
 pygame.init()
+
+#Set up game audio
+pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.mp3"))
+
+pygame.mixer.music.play(-1)
+drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
+
 # set screen width/height and caption
 screen = DropDisplay((800, 480))
 screen.grab = False
@@ -86,7 +87,6 @@ screen.Friday.image.fill((228, 255, 250))
 screen.sub(Day("Saturday", pygame.Rect((495, 290), (130, 180)), draggable = False, grab = True))
 screen.Saturday.image.fill((228, 255, 250))
 
-
 # Create tasks
 task1 = pygame.image.load(os.path.join(img_folder, "Task1.png")).convert()
 screen.TaskList.sub(Task("Task1", task1.get_rect(), task1, draggable = True))
@@ -106,9 +106,9 @@ while done == False:
             done = True
     # write game logic here
     screen.process(events)
- 
+
     # write draw code here
-    
+
     # display what is drawn here
     screen.update()
     screen.render()
