@@ -36,11 +36,12 @@ class Task(planes.Plane):
 class Trash(planes.Plane):
     def __init__(self, name, rect, draggable = False, grab = False):
         planes.Plane.__init__(self, name, rect, draggable, grab)
+        self.dropped_upon_callback = move_up_tasks
 
     def dropped_upon(self, plane, coordinates):
-        if isinstance(plane, Task):
-            plane.destroy()
-
+        screen.TaskList.remove(plane)
+        planes.Plane.dropped_upon(self, plane, coordinates)
+       
 class TaskList(planes.Plane):
     def __init__(self, name, rect, draggable = False, grab = False):
         planes.Plane.__init__(self, name, rect, draggable, grab)
