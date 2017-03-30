@@ -7,7 +7,7 @@ from collections import deque
 def move_up_tasks(self, plane, coordinates):
     # When a task is taken out of the task list, we need to move the remaining tasks up an insert another task
     x = 0
-    for key, value in screen.TaskList.subplanes.iteritems():
+    for key, value in screen.TaskList.subplanes.items():
         value.rect.x = 0
         value.rect.y = x * 45
         x = x + 1
@@ -87,7 +87,7 @@ class Day(planes.Plane):
 
         	plane.moving = False
         	self.count = len(self.subplanes)
-        	#drop_sound.play()
+        	drop_sound.play()
         	print (self.name)
             
 class DropDisplay(planes.Display):
