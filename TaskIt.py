@@ -7,7 +7,7 @@ from collections import deque
 def move_up_tasks(self, plane, coordinates):
     # When a task is taken out of the task list, we need to move the remaining tasks up an insert another task
     x = 0
-    for key, value in screen.TaskList.subplanes.iteritems():
+    for key, value in screen.TaskList.subplanes.items():
         value.rect.x = 0
         value.rect.y = x * 45
         x = x + 1
@@ -20,8 +20,8 @@ def move_up_tasks(self, plane, coordinates):
         social.remove(social[0])
         health.remove(health[0])
         grades.remove(grades[0])
-        print tasks
-    print "callback function"
+        print (tasks)
+    print ("callback function")
 
 class Task(planes.Plane):
     def __init__(self, name, rect, image, social, health, grades, highlight = True, draggable = False, grab = False):
@@ -50,61 +50,56 @@ class TaskList(planes.Plane):
         self.currentTask = 5
 
     def dropped_upon(self, plane, coordinates):
+        self.count = len(self.subplanes)
+        if(self.count < 4):
+            print (coordinates[0])
+            print (self.rect.x)
+            newX = 65
+            newY = self.count * 45 + 25
+            coordinates = ((newX, newY))
+
+            planes.Plane.dropped_upon(self, plane, coordinates)
+
+            plane.moving = False
             self.count = len(self.subplanes)
-            if(self.count < 4):
-                print coordinates[0]
-                print self.rect.x
-                newX = 65
-                newY = self.count * 45 + 25
-                coordinates = ((newX, newY))
 
-                planes.Plane.dropped_upon(self, plane, coordinates)
-
-                plane.moving = False
-                self.count = len(self.subplanes)
-
-                print self.name
+            print (self.name)
 
 class Day(planes.Plane):
-        def __init__(self, name, rect, draggable = False, grab = False):
-            planes.Plane.__init__(self, name, rect, draggable, grab)
-            self.count = len(self.subplanes)
-            self.name = name
-            self.dropped_upon_callback = move_up_tasks
-
-	def dropped_upon(self, plane, coordinates):
-                self.count = len(self.subplanes)
-                if(self.count < 4):
-                    newX = 65
-                    newY = self.count * 45 + 25
-                    coordinates = ((newX, newY))
-                    plane.draggable = False
-                    global currentSocial
-                    global currentHealth
-                    global currentGrades
-                    currentSocial = currentSocial + plane.social
-                    currentHealth = currentHealth + plane.health
-                    currentGrades = currentGrades + plane.grades
-    
-                    planes.Plane.dropped_upon(self, plane, coordinates)
-
-                    plane.moving = False
-                    self.count = len(self.subplanes)
-                    #drop_sound.play()
-                    print self.name
-
-class DropDisplay(planes.Display):
+    def __init__(self, name, rect, draggable = False, grab = False):
+        planes.Plane.__init__(self, name, rect, draggable, grab)
+        self.count = len(self.subplanes)
+        self.name = name
+        self.dropped_upon_callback = move_up_tasks
     def dropped_upon(self, plane, coordinates):
-        if isinstance(plane, Task):
-            planes.Display.dropped_upon(self, plane, coordinates)
-            plane.moving = False
+    	self.count = len(self.subplanes)
+    	if(self.count < 4):
+       		newX = 65
+        	newY = self.count * 45 + 25
+        	coordinates = ((newX, newY))
+        	plane.draggable = False
+        	global currentSocial
+        	global currentHealth
+        	global currentGrades
+        	currentSocial = currentSocial + plane.social
+        	currentHealth = currentHealth + plane.health
+        	currentGrades = currentGrades + plane.grades
+        	planes.Plane.dropped_upon(self, plane, coordinates)
+
+        	plane.moving = False
+        	self.count = len(self.subplanes)
+        	drop_sound.play()
+        	print (self.name)
+            
+class DropDisplay(planes.Display):
+	def dropped_upon(self, plane, coordinates):
+		if isinstance(plane, Task):
+			planes.Display.dropped_upon(self, plane, coordinates)
+			plane.moving = False
 
 	def dropped_upon(self, plane, coordinates):
-
 		if isinstance(plane, Task):
-
 			planes.Display.dropped_upon(self, plane, coordinates)
-
 			plane.moving = False
 
 class StatusBar(planes.Plane):
@@ -135,7 +130,7 @@ drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
 screen = DropDisplay((800, 480))
 screen.grab = False
 # Load the background image
-background = pygame.image.load(os.path.join(img_folder, "Taskitboard.jpg")).convert()
+background = pygame.image.load(os.path.join(img_folder, "TaskItBoard.jpg")).convert()
 screen.image = background
 backgroundRect = background.get_rect()
 pygame.display.set_caption("Task It")
@@ -275,15 +270,15 @@ while done == False:
             done = True
         if event.type == SECONDEVENT:
             timeAllowed = timeAllowed - 1
-            print str(timeAllowed)
+            print (str(timeAllowed))
     # write game logic here
     screen.process(events)
 
     if timeAllowed <= 0:
-        print "Time expired! Game is over!"
+        print ("Time expired! Game is over!")
         done= True
     if currentSocial >= socialGoal and currentGrades >= gradesGoal and currentHealth >= healthGoal:
-        print "You met all goals! You won the game!"
+        print ("You met all goals! You won the game!")
         done = True
  
     # write draw code here
