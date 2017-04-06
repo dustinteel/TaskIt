@@ -127,8 +127,8 @@ pygame.init()
 pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.mp3"))
 pygame.mixer.music.play(-1)
 drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
-time_expiring_sound = pygame.mixer.Sound(os.path.join(audio_folder, "time_expiring.wav"))
-time_up_sound = pygame.mixer.Sound(os.path.join(audio_folder, "times_up.wav"))
+#time_expiring_sound = pygame.mixer.Sound(os.path.join(audio_folder, "time_expiring.wav"))
+#time_up_sound = pygame.mixer.Sound(os.path.join(audio_folder, "times_up.wav"))
 
 
 # set screen width/height and caption
