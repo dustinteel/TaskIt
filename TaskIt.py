@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 import planes
+import planes.gui
 from collections import deque
 from random import randint
 # Define drag and drop task images
@@ -328,7 +329,8 @@ while True:
         # Show Week Number
            # NEED TO SHOW WEEK/LEVEL NUMBER
         # Time
-        timeAllowed = 120
+        timeAllowed = 60.0
+        timeLeft = timeAllowed
 
         # Select Tasks for this level
         numberOfTasks = 28
@@ -437,7 +439,17 @@ while True:
 
         # Put the end level logo/button on screen
         logo = pygame.image.load(os.path.join(img_folder, "taskitlogo.png")).convert_alpha()
-        screen.sub(Button("Logo", pygame.Rect((645, 380), (logo.get_width(), logo.get_height())), logo))
+        screen.sub(Button("Logo", pygame.Rect((645, 390), (logo.get_width(), logo.get_height())), logo))
+
+        # Do a bar for the timer
+        timerBar = planes.gui.ProgressBar("TimerBar", pygame.Rect((670, 265), (100, 20)), 100, text='Time Left: ' + str(int(timeLeft)), background_color=(0,0,0))
+        screen.sub(timerBar)
+
+        # Make a label for the week number
+        weekLabel = myfont.render("Week " + str(level), False, (0,0,0))
+        weekPlane = planes.Plane("weekLabel", pygame.Rect((670, 245), (weekLabel.get_width(), weekLabel.get_height())))
+        weekPlane.image = weekLabel
+        screen.sub(weekPlane)
 
         # Load the first four tasks into the task list
         screen.TaskList.sub(Task("Task1", task1.get_rect(), tasksForLevel[0], socialForLevel[0], healthForLevel[0], gradesForLevel[0], draggable = True))
@@ -471,8 +483,11 @@ while True:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 if event.type == SECONDEVENT:
-                    timeAllowed = timeAllowed - 1
-                    print str(timeAllowed)
+                    timeLeft = timeLeft - 1
+                    timerBar.percent = int((timeLeft / timeAllowed) * 100)
+                    timerBar.text = "Time Left: " + str(int(timeLeft))
+                    timerBar.redraw()
+                    timerBar.update()
             # write game logic here
             screen.process(events)
 
@@ -582,6 +597,7 @@ while True:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if finalGrade is grade100 and finalSocial is social100 and finalHealth is health100:
                         showEndLevelScreen = False
+                        level += 1
                         screen.remove_all()
                     else:
                         showEndLevelScreen = False
