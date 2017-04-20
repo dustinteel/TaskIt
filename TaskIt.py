@@ -1,10 +1,24 @@
-import pygame
 import os
+import pip
+# FIRST WE ARE GOING TO INSTALL ALL DEPENDENCIES
+##pip.main(['install', 'pygame'])
+##os.system('brew install wget')
+##os.system('wget http://static.florian-berger.de/planes-0.6.0.zip');
+##os.system('brew install unzip')
+##os.system('unzip planes-0.6.0.zip')
+##os.system('cd planes-0.6.0')
+##os.system('python setup.py install')
+##os.system('cd ../')
+##pip.main(['install', ])
+
+# Additional imports
+import pygame
 import sys
 import planes
 import planes.gui
 from collections import deque
 from random import randint
+
 # Define drag and drop task images
 def move_up_tasks(self, plane, coordinates):
     # When a task is taken out of the task list, we need to move the remaining tasks up an insert another task
@@ -22,11 +36,8 @@ def move_up_tasks(self, plane, coordinates):
         socialForLevel.remove(socialForLevel[0])
         healthForLevel.remove(healthForLevel[0])
         gradesForLevel.remove(gradesForLevel[0])
-        print tasksForLevel
-    print "callback function"
 
 def left_clicked(self):
-        print "Clicked " + self.name
         global showStart
         global start
         global showAbout
@@ -78,8 +89,6 @@ class TaskList(planes.Plane):
             dropSound.play()
             pygame.mixer.music.unpause()
             if(self.count < 4):
-                print coordinates[0]
-                print self.rect.x
                 newX = 65
                 newY = self.count * 45 + 25
                 coordinates = ((newX, newY))
@@ -89,38 +98,36 @@ class TaskList(planes.Plane):
                 plane.moving = False
                 self.count = len(self.subplanes)
 
-                print self.name
 
 class Day(planes.Plane):
-        def __init__(self, name, rect, draggable = False, grab = False):
-            planes.Plane.__init__(self, name, rect, draggable, grab)
+    def __init__(self, name, rect, draggable = False, grab = False):
+        planes.Plane.__init__(self, name, rect, draggable, grab)
+        self.count = len(self.subplanes)
+        self.name = name
+        self.dropped_upon_callback = move_up_tasks
+
+    def dropped_upon(self, plane, coordinates):
+        self.count = len(self.subplanes)
+        global dropSound
+        pygame.mixer.music.pause()
+        dropSound.play()
+        pygame.mixer.music.unpause()
+        if(self.count < 4):
+            newX = 65
+            newY = self.count * 45 + 25
+            coordinates = ((newX, newY))
+            plane.draggable = False
+            global currentSocial
+            global currentHealth
+            global currentGrades
+            currentSocial = currentSocial + plane.social
+            currentHealth = currentHealth + plane.health
+            currentGrades = currentGrades + plane.grades
+
+            planes.Plane.dropped_upon(self, plane, coordinates)
+
+            plane.moving = False
             self.count = len(self.subplanes)
-            self.name = name
-            self.dropped_upon_callback = move_up_tasks
-
-	def dropped_upon(self, plane, coordinates):
-                self.count = len(self.subplanes)
-                global dropSound
-                pygame.mixer.music.pause()
-                dropSound.play()
-                pygame.mixer.music.unpause()
-                if(self.count < 4):
-                    newX = 65
-                    newY = self.count * 45 + 25
-                    coordinates = ((newX, newY))
-                    plane.draggable = False
-                    global currentSocial
-                    global currentHealth
-                    global currentGrades
-                    currentSocial = currentSocial + plane.social
-                    currentHealth = currentHealth + plane.health
-                    currentGrades = currentGrades + plane.grades
-    
-                    planes.Plane.dropped_upon(self, plane, coordinates)
-
-                    plane.moving = False
-                    self.count = len(self.subplanes)
-                    print self.name
 
 class DropDisplay(planes.Display):
     def dropped_upon(self, plane, coordinates):
@@ -432,31 +439,31 @@ while True:
 
         # Print the goals to the screen
         myfont = pygame.font.SysFont('Comic Sans MS', 25, bold=True)
-        healthLabel = myfont.render('Health: ' + str(int(healthGoal)), False, (0,0,0))
+        healthLabel = myfont.render('Health: ' + str(int(healthGoal)), False, (243,121,35))
         healthPlane = planes.Plane("healthLabel", pygame.Rect((50, 50), (healthLabel.get_width(), healthLabel.get_height())))
         healthPlane.image = healthLabel
         screen.sub(healthPlane)
 
-        gradesLabel = myfont.render("Grades: " + str(int(gradesGoal)), False, (0,0,0))
+        gradesLabel = myfont.render("Grades: " + str(int(gradesGoal)), False, (243,121,35))
         gradesPlane = planes.Plane("gradesLabel", pygame.Rect((50, 70), (gradesLabel.get_width(), gradesLabel.get_height())))
         gradesPlane.image = gradesLabel
         screen.sub(gradesPlane)
 
-        socialLabel = myfont.render("Social: " + str(int(socialGoal)), False, (0,0,0))
+        socialLabel = myfont.render("Social: " + str(int(socialGoal)), False, (243,121,35))
         socialPlane = planes.Plane("socialLabel", pygame.Rect((50, 90), (socialLabel.get_width(), socialLabel.get_height())))
         socialPlane.image = socialLabel
         screen.sub(socialPlane)
 
         # Put the end level logo/button on screen
         logo = pygame.image.load(os.path.join(img_folder, "taskitlogo.png")).convert_alpha()
-        screen.sub(Button("Logo", pygame.Rect((645, 390), (logo.get_width(), logo.get_height())), logo))
+        screen.sub(Button("Logo", pygame.Rect((645, 380), (logo.get_width(), logo.get_height())), logo))
 
         # Do a bar for the timer
-        timerBar = planes.gui.ProgressBar("TimerBar", pygame.Rect((670, 265), (100, 20)), 100, text='Time Left: ' + str(int(timeLeft)), background_color=(0,0,0))
+        timerBar = planes.gui.ProgressBar("TimerBar", pygame.Rect((670, 265), (100, 20)), 100, text='Time Left: ' + str(int(timeLeft)), color=(243,121,35))
         screen.sub(timerBar)
 
         # Make a label for the week number
-        weekLabel = myfont.render("Week " + str(level), False, (0,0,0))
+        weekLabel = myfont.render("Week " + str(level), False, (243,121,35))
         weekPlane = planes.Plane("weekLabel", pygame.Rect((670, 245), (weekLabel.get_width(), weekLabel.get_height())))
         weekPlane.image = weekLabel
         screen.sub(weekPlane)
@@ -506,13 +513,11 @@ while True:
             screen.process(events)
 
             if timeLeft <= 0:
-                print "Time expired! Game is over!"
                 pygame.mixer.music.pause()
                 timesUpSound.play()
                 pygame.mixer.music.unpause()
                 done= True
             if currentSocial >= socialGoal and currentGrades >= gradesGoal and currentHealth >= healthGoal:
-                print "You met all goals! You won the game!"
                 done = True
          
             # write draw code here
