@@ -73,6 +73,10 @@ class TaskList(planes.Plane):
 
     def dropped_upon(self, plane, coordinates):
             self.count = len(self.subplanes)
+            global dropSound
+            pygame.mixer.music.pause()
+            dropSound.play()
+            pygame.mixer.music.unpause()
             if(self.count < 4):
                 print coordinates[0]
                 print self.rect.x
@@ -96,6 +100,10 @@ class Day(planes.Plane):
 
 	def dropped_upon(self, plane, coordinates):
                 self.count = len(self.subplanes)
+                global dropSound
+                pygame.mixer.music.pause()
+                dropSound.play()
+                pygame.mixer.music.unpause()
                 if(self.count < 4):
                     newX = 65
                     newY = self.count * 45 + 25
@@ -112,7 +120,6 @@ class Day(planes.Plane):
 
                     plane.moving = False
                     self.count = len(self.subplanes)
-                    #drop_sound.play()
                     print self.name
 
 class DropDisplay(planes.Display):
@@ -153,13 +160,6 @@ pygame.mixer.pre_init(44100, -16, 2, 2048)
 # initialize game engine
 pygame.init()
 
-#Set up game audio
-#pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.mp3"))
-#pygame.mixer.music.play(-1)
-#drop_sound = pygame.mixer.Sound(os.path.join(audio_folder,'drop_sound.wav'))
-#time_expiring_sound = pygame.mixer.Sound(os.path.join(audio_folder, "time_expiring.wav"))
-#time_up_sound = pygame.mixer.Sound(os.path.join(audio_folder, "times_up.wav"))
-
 # set screen width/height and caption
 screen = DropDisplay((800, 480))
 screen.grab = False
@@ -181,6 +181,16 @@ playImage = pygame.image.load(os.path.join(img_folder, "play.png")).convert_alph
 aboutImage = pygame.image.load(os.path.join(img_folder, "about.png")).convert_alpha()
 rulesImage = pygame.image.load(os.path.join(img_folder, "rules.png")).convert_alpha()
 
+# We are now going to load and start the background music
+pygame.mixer.music.load(os.path.join(audio_folder, "Task_It_theme.ogg"))
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
+
+# Load other sounds
+dropSound = pygame.mixer.Sound("drop_sound.ogg")
+levelCompleteSound = pygame.mixer.Sound("level_complete.ogg")
+timeExpiringSound = pygame.mixer.Sound("time_expiring.ogg")
+timesUpSound = pygame.mixer.Sound("times_up.ogg")
 
 start = False
 showAbout = False
@@ -486,13 +496,20 @@ while True:
                     timeLeft = timeLeft - 1
                     timerBar.percent = int((timeLeft / timeAllowed) * 100)
                     timerBar.text = "Time Left: " + str(int(timeLeft))
+                    if timeLeft / timeAllowed == 0.25:
+                        pygame.mixer.music.pause()
+                        timeExpiringSound.play()
+                        pygame.mixer.music.unpause()
                     timerBar.redraw()
                     timerBar.update()
             # write game logic here
             screen.process(events)
 
-            if timeAllowed <= 0:
+            if timeLeft <= 0:
                 print "Time expired! Game is over!"
+                pygame.mixer.music.pause()
+                timesUpSound.play()
+                pygame.mixer.music.unpause()
                 done= True
             if currentSocial >= socialGoal and currentGrades >= gradesGoal and currentHealth >= healthGoal:
                 print "You met all goals! You won the game!"
@@ -589,6 +606,9 @@ while True:
 
         # END LEVEL SCREEN
         showEndLevelScreen = True
+        pygame.mixer.music.pause()
+        levelCompleteSound.play()
+        pygame.mixer.music.unpause()
         while showEndLevelScreen:
             events = pygame.event.get()
             for event in events:
